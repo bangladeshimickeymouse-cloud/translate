@@ -43,6 +43,16 @@ header h1 {
   margin-top: 2px;
 }
 
+.users {
+  font-size: 12px;
+  margin-top: 6px;
+  opacity: 0.9;
+}
+
+.users .online {
+  color: #a8ffa8;
+}
+
 .join-form {
   flex: 1;
   display: flex;

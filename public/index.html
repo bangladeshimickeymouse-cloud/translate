@@ -9,16 +9,18 @@
 <body>
   <div class="container" id="join-screen">
     <header>
-      <h1>Translator Chat</h1>
-      <p class="subtitle">Vietnamese &harr; English</p>
+      <h1 id="join-title">Translator Chat</h1>
+      <p class="subtitle" id="join-sub">Vietnamese &harr; English</p>
     </header>
     <div class="join-form">
       <input type="text" id="name-input" placeholder="Your name" autocomplete="off" />
       <input type="text" id="room-input" placeholder="Room name" value="default" autocomplete="off" />
-      <select id="lang-select">
-        <option value="en">I speak English</option>
-        <option value="vi">Tôi nói tiếng Việt</option>
-      </select>
+      <div id="lang-select-wrapper">
+        <select id="lang-select">
+          <option value="en">I speak English</option>
+          <option value="vi">Tôi nói tiếng Việt</option>
+        </select>
+      </div>
       <button id="join-btn">Join Chat</button>
     </div>
   </div>
@@ -27,6 +29,7 @@
     <header>
       <h1>Translator Chat</h1>
       <p class="subtitle" id="room-label">Room: default</p>
+      <div class="users" id="users-status"></div>
     </header>
     <div class="chat" id="chat"></div>
     <form class="input-area" id="form">
