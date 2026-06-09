@@ -24,6 +24,15 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "..", "public")));
 
+app.get("/api/debug", (req, res) => {
+  res.json({
+    has_deepseek_key: !!process.env.DEEPSEEK_API_KEY,
+    has_supabase_url: !!process.env.SUPABASE_URL,
+    has_supabase_anon: !!process.env.SUPABASE_ANON_KEY,
+    node_version: process.version,
+  });
+});
+
 app.post("/api/translate", async (req, res) => {
   const { message, room, user_name } = req.body;
 
@@ -67,7 +76,7 @@ app.post("/api/translate", async (req, res) => {
     res.json({ original: message, translated, source_lang });
   } catch (err) {
     console.error("DeepSeek API error:", err);
-    res.status(500).json({ error: "Translation service error" });
+    res.status(500).json({ error: err.message || "Translation service error" });
   }
 });
 
