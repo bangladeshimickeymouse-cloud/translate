@@ -42,20 +42,27 @@ app.post("/api/translate", async (req, res) => {
       },
       body: JSON.stringify({
         model: "deepseek-v4-flash",
+        temperature: 0,
         messages: [
           {
             role: "system",
             content:
-              "You are a translator. Detect whether the user's message is in Vietnamese or English. " +
-              "If it's Vietnamese, translate it to English. If it's English, translate it to Vietnamese. " +
-              "Respond with ONLY the translated text, nothing else.",
+              "You are a translator between Vietnamese and English. " +
+              "Translate the user's message. If it's English, output Vietnamese. If it's Vietnamese, output English. " +
+              "Use correct Unicode for Vietnamese characters (à, á, ả, ã, ạ, ă, â, đ, ê, ô, ơ, ư, etc.). " +
+              "Output ONLY the translated text with no explanation.",
           },
           { role: "user", content: message },
         ],
       }),
     });
 
-    const data = await response.json();
+    const raw = await response.arrayBuffer();
+    let text = new TextDecoder("utf-8", { fatal: false }).decode(raw);
+    if (text.includes("\uFFFD")) {
+      text = new TextDecoder("latin1").decode(raw);
+    }
+    const data = JSON.parse(text);
 
     if (!response.ok) {
       return res.status(500).json({ error: data.error?.message || "Translation failed" });

@@ -192,7 +192,7 @@ function renderMessage(msg) {
   sender.textContent = msg.user_name;
 
   const content = document.createElement("div");
-  content.textContent = isMe ? msg.original_text : msg.translated_text;
+  content.textContent = msg.source_lang === userLang ? msg.original_text : msg.translated_text;
 
   div.appendChild(sender);
   div.appendChild(content);
