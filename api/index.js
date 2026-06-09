@@ -26,6 +26,14 @@ app.get("/api/debug", (req, res) => {
   });
 });
 
+app.post("/api/decode-test", async (req, res) => {
+  const { text } = req.body;
+  const buf = Buffer.from(text || "", "latin1");
+  const utf8 = buf.toString("utf8");
+  const hasReplacement = utf8.includes("\uFFFD");
+  res.json({ original: text, utf8, hasReplacement, hex: buf.toString("hex") });
+});
+
 app.post("/api/translate", async (req, res) => {
   const { message, room, user_name } = req.body;
 
@@ -59,10 +67,12 @@ app.post("/api/translate", async (req, res) => {
 
     const raw = Buffer.from(await response.arrayBuffer());
     let text = raw.toString("utf8");
-    if (text.includes("\uFFFD")) {
+    let data = JSON.parse(text);
+    const hasBadChars = data.choices?.[0]?.message?.content?.includes("\uFFFD");
+    if (hasBadChars) {
       text = raw.toString("latin1");
+      data = JSON.parse(text);
     }
-    const data = JSON.parse(text);
 
     if (!response.ok) {
       return res.status(500).json({ error: data.error?.message || "Translation failed" });
