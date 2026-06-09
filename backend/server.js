@@ -54,10 +54,12 @@ app.post("/api/translate", async (req, res) => {
 
     const raw = Buffer.from(await response.arrayBuffer());
     let text = raw.toString("utf8");
-    if (text.includes("\uFFFD")) {
+    let data = JSON.parse(text);
+    const hasBadChars = data.choices?.[0]?.message?.content?.includes("\uFFFD");
+    if (hasBadChars) {
       text = raw.toString("latin1");
+      data = JSON.parse(text);
     }
-    const data = JSON.parse(text);
 
     if (!response.ok) {
       return res.status(500).json({ error: data.error?.message || "Translation failed" });
