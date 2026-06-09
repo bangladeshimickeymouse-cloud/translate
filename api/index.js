@@ -42,7 +42,7 @@ app.post("/api/translate", async (req, res) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "deepseek-chat",
+      model: "deepseek-v4-flash",
       messages: [
         {
           role: "system",
