@@ -43,6 +43,45 @@ header h1 {
   margin-top: 2px;
 }
 
+.join-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+}
+
+.join-form input,
+.join-form select {
+  padding: 12px 14px;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.join-form input:focus,
+.join-form select:focus {
+  border-color: #1a73e8;
+}
+
+.join-form button {
+  padding: 12px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.join-form button:hover {
+  background: #1557b0;
+}
+
 .chat {
   flex: 1;
   overflow-y: auto;
@@ -61,21 +100,21 @@ header h1 {
   word-wrap: break-word;
 }
 
-.message.user {
+.message.me {
   align-self: flex-end;
   background: #1a73e8;
   color: white;
   border-bottom-right-radius: 4px;
 }
 
-.message.bot {
+.message.other {
   align-self: flex-start;
   background: #e8eaed;
   color: #1a1a1a;
   border-bottom-left-radius: 4px;
 }
 
-.message .label {
+.message .sender {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -84,7 +123,7 @@ header h1 {
   opacity: 0.7;
 }
 
-.message.user .label {
+.message.me .sender {
   text-align: right;
 }
 

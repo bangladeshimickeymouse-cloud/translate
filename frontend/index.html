@@ -3,30 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Translator MVP</title>
+  <title>Translator Chat</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="join-screen">
     <header>
-      <h1>Translator</h1>
+      <h1>Translator Chat</h1>
       <p class="subtitle">Vietnamese &harr; English</p>
     </header>
+    <div class="join-form">
+      <input type="text" id="name-input" placeholder="Your name" autocomplete="off" />
+      <input type="text" id="room-input" placeholder="Room name" value="default" autocomplete="off" />
+      <select id="lang-select">
+        <option value="en">I speak English</option>
+        <option value="vi">Tôi nói tiếng Việt</option>
+      </select>
+      <button id="join-btn">Join Chat</button>
+    </div>
+  </div>
 
+  <div class="container" id="chat-screen" style="display:none">
+    <header>
+      <h1>Translator Chat</h1>
+      <p class="subtitle" id="room-label">Room: default</p>
+    </header>
     <div class="chat" id="chat"></div>
-
     <form class="input-area" id="form">
-      <input
-        type="text"
-        id="input"
-        placeholder="Type a message..."
-        autocomplete="off"
-        required
-      />
+      <input type="text" id="input" placeholder="Type a message..." autocomplete="off" required />
       <button type="submit">Send</button>
     </form>
   </div>
 
-  <script src="app.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    }
+  }
+  </script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

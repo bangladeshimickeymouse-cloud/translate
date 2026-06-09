@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import OpenAI from "openai";
+import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,13 +18,18 @@ const openai = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
 });
 
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
 app.use(cors());
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
 app.post("/api/translate", async (req, res) => {
-  const { message } = req.body;
+  const { message, room, user_name } = req.body;
 
   if (!message || typeof message !== "string" || !message.trim()) {
     return res.status(400).json({ error: "Message is required" });
@@ -50,11 +56,40 @@ app.post("/api/translate", async (req, res) => {
       return res.status(500).json({ error: "Translation failed" });
     }
 
-    res.json({ original: message, translated });
+    const source_lang = detectLanguage(message, translated);
+
+    if (room && user_name) {
+      await supabase.from("messages").insert({
+        room,
+        user_name,
+        original_text: message,
+        translated_text: translated,
+        source_lang,
+      });
+    }
+
+    res.json({ original: message, translated, source_lang });
   } catch (err) {
     console.error("DeepSeek API error:", err);
     res.status(500).json({ error: "Translation service error" });
   }
+});
+
+app.get("/api/messages", async (req, res) => {
+  const { room = "default" } = req.query;
+
+  const { data, error } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("room", room)
+    .order("created_at", { ascending: true })
+    .limit(100);
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data);
 });
 
 app.get("*", (req, res) => {
@@ -64,3 +99,11 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+function detectLanguage(original, translated) {
+  const viChars =
+    /[àáảãạăắằẳẵặâấầẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]/i;
+  if (viChars.test(original)) return "vi";
+  if (viChars.test(translated)) return "en";
+  return original.length < translated.length ? "en" : "vi";
+}
