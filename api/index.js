@@ -57,10 +57,10 @@ app.post("/api/translate", async (req, res) => {
       }),
     });
 
-    const raw = await response.arrayBuffer();
-    let text = new TextDecoder("utf-8", { fatal: false }).decode(raw);
+    const raw = Buffer.from(await response.arrayBuffer());
+    let text = raw.toString("utf8");
     if (text.includes("\uFFFD")) {
-      text = new TextDecoder("latin1").decode(raw);
+      text = raw.toString("latin1");
     }
     const data = JSON.parse(text);
 
