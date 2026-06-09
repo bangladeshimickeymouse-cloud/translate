@@ -2,16 +2,12 @@ import express from "express";
 import cors from "cors";
 import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
-import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-
-dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 const openai = new OpenAI({
   baseURL: "https://api.deepseek.com/v1",
